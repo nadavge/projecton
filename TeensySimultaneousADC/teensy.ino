@@ -5,7 +5,8 @@
 // Teensy 3.1 has the LED on pin 13
 #define LEDPIN 13
 
-void setup() {
+void setup() 
+{
 
   pinMode(LEDPIN, OUTPUT);
   pinMode(A2, INPUT); 
@@ -51,11 +52,13 @@ int i;
 int k;
 
 
-void loop() {
+void loop() 
+{
   startTime = micros();
      //START SAMPLING
      //Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
-  for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) {
+  for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
+  {
     //TAKE THE READINGS
     highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
     //SHOULD ADJUST THIS 2nd READING
@@ -67,7 +70,8 @@ void loop() {
     buffer4[k] = value4;
     
     //CHECK FOR EVENTS
-    if (value1 > THRESHOLD && !event) {
+    if (value1 > THRESHOLD && !event) 
+    {
       event = k;
       //THERE IS AN EVENT, ARE WE REACHING THE END? IF SO TAKE MORE SAMPLES
       if (i > SAMPLES-1024) samples = SAMPLES+1024;
@@ -79,7 +83,8 @@ void loop() {
   stopTime = micros();
   
   //WAS AN EVENT BEEN DETECTED?
-  if (event != 0) {
+  if (event != 0) 
+  {
     printInfo();
     printSamples(); 
   }
@@ -90,10 +95,12 @@ void loop() {
 }
 
 
-void parseSerial() {
+void parseSerial() 
+{
   char c = Serial.read();
 
-  switch (c) {
+  switch (c) 
+  {
   case 'p': 
     printInfo();
     break;
@@ -112,7 +119,8 @@ void parseSerial() {
 }
 
 
-void printSamples() {
+void printSamples() 
+{
   
   Serial.print("BUFFSIZE: ");
   Serial.print(BUFFERSIZE,DEC);
@@ -129,16 +137,19 @@ void printSamples() {
 
 //This should be optimized. Writing raw binary data seems to fail a lot of times
 //and I ended up loosing bytes. Maybe some form of flow-control should be used.
-void serialWrite(byte *buffer,int siz) {
+void serialWrite(byte *buffer,int siz) 
+{
   int kk;
-  for (kk=0;kk<siz;kk++) {
+  for (kk=0;kk<siz;kk++) 
+  {
     Serial.print(buffer[kk],HEX);    
     Serial.print(" ");
   }
   Serial.println();
 }
 
-void printInfo() {
+void printInfo() 
+{
   totalTime = stopTime-startTime;
   double samplesPerSec = i*1000.0/totalTime;
   

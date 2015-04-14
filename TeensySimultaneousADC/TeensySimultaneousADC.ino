@@ -2,11 +2,6 @@
 #include <ADC.h>
 #include "Teensy31FastADC.h"
 
-//FOR TEMPERATURE/HUMIDITY SENSOR
-#include <dht11.h>
-#define DHT11PIN 12
-static dht11 DHT11;
-
 // Teensy 3.1 has the LED on pin 13
 #define LEDPIN 13
 
@@ -79,7 +74,7 @@ void loop() {
       //SHOULD AJUST TIME LOST IN THIS LOGIC TOO
     }
     
-    if (++k == BUFFERSIZE) k = 0; 
+    if (++k == BUFFERSIZE) k = 0;
   }
   stopTime = micros();
   
@@ -88,7 +83,7 @@ void loop() {
     printInfo();
     printSamples(); 
   }
- 
+
   //DID WE RECEIVE COMMANDS?
   if (Serial.available()) parseSerial();
 
@@ -147,21 +142,12 @@ void printInfo() {
   totalTime = stopTime-startTime;
   double samplesPerSec = i*1000.0/totalTime;
   
-  //Take a temperature/humidity reading
-  //The DHT11 should be connected with a resistor for less errors in readings,
-  // but works without it if you take some readings untils you got an ok one.
-  while(DHT11.read(DHT11PIN) != DHTLIB_OK);
-
   Serial.print("T: ");
   Serial.print(totalTime);
   Serial.print(" Samples: ");
   Serial.print(i,DEC);
   Serial.print(" Samples/uSec: ");
   Serial.print(samplesPerSec,7);
-  Serial.print(" Temp: ");
-  Serial.print((float)DHT11.temperature,2);
-  Serial.print(" Hum: ");
-  Serial.print((float)DHT11.humidity,2);
   Serial.print(" Threshold: ");
   Serial.println(THRESHOLD,DEC);
   Serial.flush();

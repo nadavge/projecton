@@ -3,5 +3,5 @@ s = serial('COM12','BaudRate',BAUD_RATE);
 s.BytesAvailableFcnMode = 'terminator';
 s.Terminator = 13; % New line character
 s.BytesAvailableFcn = @serial_callback;
-s.InputBufferSize = 4096;
+s.InputBufferSize = 8192;
 fopen(s);

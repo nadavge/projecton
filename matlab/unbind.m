@@ -1,0 +1,2 @@
+delete(s);
+clear s;

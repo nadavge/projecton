@@ -36,6 +36,7 @@ long startTime;
 long stopTime;
 long totalTime;
 long loopTime = 0;
+long loopStartTime = 0;
 int event;
 bool tookTime = false;
 
@@ -48,12 +49,9 @@ void loop()
   startTime = micros();
      //START SAMPLING
      //Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
+  loopStartTime = micros();
   for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
   {
-	if (!tookTime)
-	{
-		loopTime = micros();
-	}
     //TAKE THE READINGS
     highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
     
@@ -71,10 +69,8 @@ void loop()
     if (++k == BUFFERSIZE)
 	{
 		k = 0;
-		if (!tookTime)
-		{
-			loopTime = micros() - loopTime;
-		}
+		loopTime = micros() - loopStartTime;
+                loopStartTime = micros();
 	}
   }
   stopTime = micros();

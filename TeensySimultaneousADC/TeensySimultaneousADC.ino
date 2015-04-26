@@ -35,7 +35,9 @@ int samples;
 long startTime;
 long stopTime;
 long totalTime;
+long loopTime = 0;
 int event;
+bool tookTime = false;
 
 int i;
 int k;
@@ -48,6 +50,10 @@ void loop()
      //Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
   for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
   {
+	if (!tookTime)
+	{
+		loopTime = micros();
+	}
     //TAKE THE READINGS
     highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
     
@@ -62,7 +68,14 @@ void loop()
       //SHOULD AJUST TIME LOST IN THIS LOGIC TOO
     }
     
-    if (++k == BUFFERSIZE) k = 0;
+    if (++k == BUFFERSIZE)
+	{
+		k = 0;
+		if (!tookTime)
+		{
+			loopTime = micros() - loopTime;
+		}
+	}
   }
   stopTime = micros();
   
@@ -142,6 +155,8 @@ void printInfo()
   Serial.print(samplesPerSec,7);
   Serial.print(" Threshold: ");
   Serial.println(THRESHOLD,DEC);
+  Serial.print("Loop time: ");
+  Serial.println(loopTime, DEC);
   Serial.flush();
 }
 

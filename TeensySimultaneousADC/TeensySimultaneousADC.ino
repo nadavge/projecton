@@ -10,9 +10,6 @@ void setup()
 
   pinMode(LEDPIN, OUTPUT);
   pinMode(A2, INPUT); 
-  pinMode(A3, INPUT); 
-  pinMode(A10, INPUT); 
-  pinMode(A11, INPUT);
   highSpeed8bitADCSetup();
 
   Serial.begin(115200);
@@ -27,20 +24,12 @@ void setup()
 #define BUFFERSIZE 2048
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
-const int channelA3 = ADC::channel2sc1aADC1[3];
-const int channelA11 = ADC::channel2sc1aADC0[11];
-const int channelA10 = ADC::channel2sc1aADC1[10];
 
 byte THRESHOLD = 180;
 byte value1;
 byte value2;
-byte value3;
-byte value4;
 
-byte buffer1[BUFFERSIZE];
-byte buffer2[BUFFERSIZE];
-byte buffer3[BUFFERSIZE];
-byte buffer4[BUFFERSIZE];
+byte buffer[BUFFERSIZE];
 
 int samples;
 long startTime;
@@ -60,14 +49,9 @@ void loop()
   for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
   {
     //TAKE THE READINGS
-    highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
-    //SHOULD ADJUST THIS 2nd READING
-    highSpeed8bitAnalogReadMacro(channelA11, channelA10,value3,value4);
+    highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
     
-    buffer1[k] = value1;
-    buffer2[k] = value2;
-    buffer3[k] = value3;
-    buffer4[k] = value4;
+    buffer[k] = value1;
     
     //CHECK FOR EVENTS
     if (value1 > THRESHOLD && !event) 
@@ -126,10 +110,7 @@ void printSamples()
   Serial.print(BUFFERSIZE,DEC);
   Serial.print(" Event: ");
   Serial.println(event);
-  serialWrite(buffer1,BUFFERSIZE);
-  serialWrite(buffer2,BUFFERSIZE);
-  serialWrite(buffer3,BUFFERSIZE);
-  serialWrite(buffer4,BUFFERSIZE);
+  serialWrite(buffer,BUFFERSIZE);
   Serial.flush();
   
 }

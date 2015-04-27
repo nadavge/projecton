@@ -23,8 +23,10 @@ void setup()
 }
 
 
-#define SAMPLES 2048
 #define BUFFERSIZE 2048
+#define SAMPLES BUFFERSIZE
+#define SAMPLES_EVENT SAMPLES-(BUFFERSIZE/2)
+#define NO_EVENT -1
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
 const int channelA3 = ADC::channel2sc1aADC1[3];
@@ -32,21 +34,20 @@ const int channelA11 = ADC::channel2sc1aADC0[11];
 const int channelA10 = ADC::channel2sc1aADC1[10];
 
 byte THRESHOLD = 180;
-byte value1;
-byte value2;
-byte value3;
-byte value4;
+byte value1 = 0;
+byte value2 = 0;
+byte value3 = 0;
+byte value4 = 0;
 
-byte buffer1[BUFFERSIZE];
-byte buffer2[BUFFERSIZE];
-byte buffer3[BUFFERSIZE];
-byte buffer4[BUFFERSIZE];
+byte buffer1[BUFFERSIZE] = {0};
+byte buffer2[BUFFERSIZE] = {0};
+byte buffer3[BUFFERSIZE] = {0};
+byte buffer4[BUFFERSIZE] = {0};
 
-int samples;
-long startTime;
-long stopTime;
-long totalTime;
-int event;
+long startTime = 0;
+long stopTime = 0;
+long totalTime = 0;
+int event = NO_EVENT;
 
 int i;
 int k;
@@ -57,7 +58,10 @@ void loop()
   startTime = micros();
      //START SAMPLING
      //Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
-  for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
+  i = 0;
+  k = 0;
+  event = NO_EVENT;
+  for(;i<SAMPLES;i++) 
   {
     //TAKE THE READINGS
     highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
@@ -70,12 +74,11 @@ void loop()
     buffer4[k] = value4;
     
     //CHECK FOR EVENTS
-    if (value1 > THRESHOLD && !event) 
+    if (value1 > THRESHOLD && event != NO_EVENT) 
     {
       event = k;
-      //THERE IS AN EVENT, ARE WE REACHING THE END? IF SO TAKE MORE SAMPLES
-      if (i > SAMPLES-1024) samples = SAMPLES+1024;
-      //SHOULD AJUST TIME LOST IN THIS LOGIC TOO
+      // Set i to sample the amount set by the user
+      i = SAMPLES_EVENT;
     }
     
     if (++k == BUFFERSIZE) k = 0;
@@ -83,7 +86,7 @@ void loop()
   stopTime = micros();
   
   //WAS AN EVENT BEEN DETECTED?
-  if (event != 0) 
+  if (event != NO_EVENT) 
   {
     printInfo();
     printSamples(); 

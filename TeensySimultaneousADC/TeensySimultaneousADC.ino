@@ -20,24 +20,28 @@ void setup()
 }
 
 
-#define SAMPLES 2048
 #define BUFFERSIZE 2048
+#define SAMPLES BUFFERSIZE
+#define SAMPLES_EVENT SAMPLES-(BUFFERSIZE/2)
+#define NO_EVENT -1
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
 
 byte THRESHOLD = 180;
-byte value1;
-byte value2;
 
-byte buffer[BUFFERSIZE];
+byte buffer[BUFFERSIZE] = {0};
 
-int samples;
-long startTime;
-long stopTime;
-long totalTime;
+byte value1 = 0;
+byte value2 = 0;
+
+long startTime = 0;
+long stopTime = 0;
+long totalTime = 0;
+int event = NO_EVENT;
+
+// Data for time tracking
 long loopTime = 0;
 long loopStartTime = 0;
-int event;
 bool tookTime = false;
 
 int i;
@@ -50,7 +54,10 @@ void loop()
      //START SAMPLING
      //Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
   loopStartTime = micros();
-  for(i=0,k=0,samples=SAMPLES,event=0;i<samples;i++) 
+  i = 0;
+  k = 0;
+  event = NO_EVENT;
+  for(;i<SAMPLES;i++) 
   {
     //TAKE THE READINGS
     highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
@@ -58,12 +65,11 @@ void loop()
     buffer[k] = value1;
     
     //CHECK FOR EVENTS
-    if (value1 > THRESHOLD && !event) 
+    if (value1 > THRESHOLD && event != NO_EVENT) 
     {
       event = k;
-      //THERE IS AN EVENT, ARE WE REACHING THE END? IF SO TAKE MORE SAMPLES
-      if (i > SAMPLES-1024) samples = SAMPLES+1024;
-      //SHOULD AJUST TIME LOST IN THIS LOGIC TOO
+      // Set i to sample the amount set by the user
+      i = SAMPLES_EVENT;
     }
     
     if (++k == BUFFERSIZE)
@@ -76,7 +82,7 @@ void loop()
   stopTime = micros();
   
   //WAS AN EVENT BEEN DETECTED?
-  if (event != 0) 
+  if (event != NO_EVENT) 
   {
     printInfo();
     printSamples(); 

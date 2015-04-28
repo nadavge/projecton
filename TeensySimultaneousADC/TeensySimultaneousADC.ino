@@ -19,10 +19,10 @@ void setup()
 	digitalWrite(LEDPIN,0);
 }
 
-
 #define BUFFERSIZE 2048
 #define SAMPLES BUFFERSIZE
-#define SAMPLES_EVENT SAMPLES-(BUFFERSIZE/2)
+// The amount of samples to take after the event was spotted
+#define SAMPLES_EVENT (BUFFERSIZE/2)
 #define NO_EVENT -1
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
@@ -45,45 +45,47 @@ int k = 0;
 
 void loop() 
 {
-	startTime = micros();
-	//START SAMPLING
-	//Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
-	i = 0;
-	k = 0;
-	event = NO_EVENT;
-	for(;i<SAMPLES;i++) 
-	{
-		//TAKE THE READINGS
-		highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
-		
-		buffer[k] = value1;
-		
-		//CHECK FOR EVENTS
-		if (value1 > THRESHOLD && event != NO_EVENT) 
-		{
-			event = k;
-			// Set i to sample the amount set by the user
-			i = SAMPLES_EVENT;
-		}
-		
-		if (++k == BUFFERSIZE)
-		{
-			k = 0;
-		}
-	}
-	stopTime = micros();
-	
-	//WAS AN EVENT BEEN DETECTED?
-	if (event != NO_EVENT) 
-	{
-		printInfo();
-		printSamples(); 
-	}
-
-	//DID WE RECEIVE COMMANDS?
-	if (Serial.available()) parseSerial();
-
+	run();
 }
+
+void run() {
+	while(true)
+	{
+		startTime = micros();
+		event = NO_EVENT;
+		for(i=SAMPLES; --i;) 
+		{
+			//TAKE THE READINGS
+			highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
+			
+			buffer[k] = value1;
+			
+			//CHECK FOR EVENTS
+			if (value1 > THRESHOLD && event != NO_EVENT) 
+			{
+				event = k;
+				i = SAMPLES_EVENT;
+			}
+			
+			if (++k == BUFFERSIZE)
+			{
+				k = 0;
+			}
+		}
+		stopTime = micros();
+		
+		//WAS AN EVENT BEEN DETECTED?
+		if (event != NO_EVENT) 
+		{
+			printInfo();
+			printSamples(); 
+		}
+	
+		//DID WE RECEIVE COMMANDS?
+		// TODO Signal the user if an event was spotted early on the loop
+		if (Serial.available()) parseSerial();
+	}
+} // Ends while
 
 
 void parseSerial() 

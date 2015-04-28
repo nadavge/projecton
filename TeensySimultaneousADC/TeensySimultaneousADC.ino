@@ -34,6 +34,7 @@ byte buffer[BUFFERSIZE] = {0};
 byte value1 = 0;
 byte value2 = 0;
 
+int sampled = 0;
 long startTime = 0;
 long stopTime = 0;
 long totalTime = 0;
@@ -53,7 +54,7 @@ void run() {
 	{
 		startTime = micros();
 		event = NO_EVENT;
-		for(i=SAMPLES; --i;) 
+		for(i=SAMPLES, sampled=0; i--; ++sampled)
 		{
 			//TAKE THE READINGS
 			highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
@@ -141,12 +142,12 @@ void serialWrite(byte *buffer,int siz)
 void printInfo() 
 {
 	totalTime = stopTime-startTime;
-	double samplesPerSec = i*1000.0/totalTime;
+	double samplesPerSec = sampled*1000.0/totalTime;
 	
 	Serial.print("T: ");
 	Serial.print(totalTime);
-	Serial.print(" Samples: ");
-	Serial.print(i,DEC);
+	Serial.print(" Sampled: ");
+	Serial.print(sampled,DEC);
 	Serial.print(" Samples/uSec: ");
 	Serial.print(samplesPerSec,7);
 	Serial.print(" Threshold: ");

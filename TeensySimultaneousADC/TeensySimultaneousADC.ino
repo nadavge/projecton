@@ -5,6 +5,15 @@
 // Teensy 3.1 has the LED on pin 13
 #define LEDPIN 13
 
+/*
+ * Used for communication. Each data sent starts with 3 bytes stating
+ * what type of data is transmitted. This is the code of the data.
+ */
+#define CODE_BUFFER "B"
+#define CODE_BUFFER_INFO "BI"
+#define CODE_INFO "IN"
+#define SEPERATOR " "
+
 void setup() 
 {
 
@@ -115,35 +124,38 @@ void parseSerial()
 
 void printSamples() 
 {
-	
+	Serial.print(CODE_BUFFER_INFO SEPERATOR);
 	Serial.print("BUFFSIZE: ");
 	Serial.print(BUFFERSIZE,DEC);
 	Serial.print(" Event: ");
 	Serial.println(event);
-	serialWrite(buffer,BUFFERSIZE);
-	Serial.flush();
-	
+	serialWrite(buffer,BUFFERSIZE, 1);	
 }
 
 
 //This should be optimized. Writing raw binary data seems to fail a lot of times
 //and I ended up loosing bytes. Maybe some form of flow-control should be used.
-void serialWrite(byte *buffer,int siz) 
+void serialWrite(byte *buffer,int siz, int id) 
 {
 	int kk;
+	Serial.print(CODE_BUFFER);
+	Serial.print(id, HEX);
+	Serial.print(SEPERATOR);
 	for (kk=0;kk<siz;kk++) 
 	{
-		Serial.print(buffer[kk],HEX);		
-		Serial.print(" ");
+		Serial.print(buffer[kk],HEX);
+		// Send without spaces
+		//Serial.print(" ");
 	}
 	Serial.println();
+	Serial.flush();
 }
 
 void printInfo() 
 {
 	totalTime = stopTime-startTime;
 	double samplesPerSec = sampled*1000.0/totalTime;
-	
+	Serial.print(CODE_INFO SEPERATOR);
 	Serial.print("T: ");
 	Serial.print(totalTime);
 	Serial.print(" Sampled: ");

@@ -39,11 +39,6 @@ long stopTime = 0;
 long totalTime = 0;
 int event = NO_EVENT;
 
-// Data for time tracking
-long loopTime = 0;
-long loopStartTime = 0;
-bool tookTime = false;
-
 int i = 0;
 int k = 0;
 
@@ -53,7 +48,6 @@ void loop()
 	startTime = micros();
 	//START SAMPLING
 	//Strange init in this for, but the compiler seems to optimize this code better, so we get faster sampling
-	loopStartTime = micros();
 	i = 0;
 	k = 0;
 	event = NO_EVENT;
@@ -75,8 +69,6 @@ void loop()
 		if (++k == BUFFERSIZE)
 		{
 			k = 0;
-			loopTime = micros() - loopStartTime;
-			loopStartTime = micros();
 		}
 	}
 	stopTime = micros();
@@ -157,7 +149,5 @@ void printInfo()
 	Serial.print(samplesPerSec,7);
 	Serial.print(" Threshold: ");
 	Serial.println(THRESHOLD,DEC);
-	Serial.print("Loop time: ");
-	Serial.println(loopTime, DEC);
 	Serial.flush();
 }

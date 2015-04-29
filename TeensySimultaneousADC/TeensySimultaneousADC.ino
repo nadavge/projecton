@@ -18,7 +18,10 @@ void setup()
 {
 
 	pinMode(LEDPIN, OUTPUT);
-	pinMode(A2, INPUT); 
+	pinMode(A2, INPUT);
+	pinMode(A3, INPUT); 
+	pinMode(A10, INPUT); 
+	pinMode(A11, INPUT);
 	highSpeed8bitADCSetup();
 
 	Serial.begin(115200);
@@ -35,13 +38,21 @@ void setup()
 #define NO_EVENT -1
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
+const int channelA3 = ADC::channel2sc1aADC1[3];
+const int channelA11 = ADC::channel2sc1aADC0[11];
+const int channelA10 = ADC::channel2sc1aADC1[10];
 
 byte THRESHOLD = 180;
 
-byte buffer[BUFFERSIZE] = {0};
+byte buffer1[BUFFERSIZE] = {0};
+byte buffer2[BUFFERSIZE] = {0};
+byte buffer3[BUFFERSIZE] = {0};
+byte buffer4[BUFFERSIZE] = {0};
 
 byte value1 = 0;
 byte value2 = 0;
+byte value3 = 0;
+byte value4 = 0;
 
 int sampled = 0;
 long startTime = 0;
@@ -67,8 +78,12 @@ void run() {
 		{
 			//TAKE THE READINGS
 			highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
+			highSpeed8bitAnalogReadMacro(channelA11, channelA10,value3,value4);
 			
-			buffer[k] = value1;
+			buffer1[k] = value1;
+			buffer2[k] = value2;
+			buffer3[k] = value3;
+			buffer4[k] = value4;
 			
 			//CHECK FOR EVENTS
 			if (value1 > THRESHOLD && event != NO_EVENT) 
@@ -82,6 +97,7 @@ void run() {
 				k = 0;
 			}
 		}
+		
 		stopTime = micros();
 		
 		//WAS AN EVENT BEEN DETECTED?

@@ -160,7 +160,7 @@ void printInfo()
 	Serial.print(totalTime);
 	Serial.print(" Sampled: ");
 	Serial.print(sampled,DEC);
-	Serial.print(" Samples/uSec: ");
+	Serial.print(" Samples/mSec: ");
 	Serial.print(samplesPerSec,7);
 	Serial.print(" Threshold: ");
 	Serial.println(THRESHOLD,DEC);

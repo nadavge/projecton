@@ -11,6 +11,7 @@
  */
 #define CODE_BUFFER "B"
 #define CODE_BUFFER_INFO "BI"
+#define CODE_EVENT_INDEX "EI"
 #define CODE_INFO "IN"
 #define SEPERATOR " "
 
@@ -145,10 +146,12 @@ void printSamples()
 	Serial.print(BUFFERSIZE,DEC);
 	serialWrite(buffer1, BUFFERSIZE, 1);
 	serialWrite(buffer2, BUFFERSIZE, 2);
-	serialWrite(buffer3, BUFFERSIZE, 3);
+	serialWrite(buffer3, BUFFERSIZE, 3);	
 	serialWrite(buffer4, BUFFERSIZE, 4);
 	Serial.print(" Event: ");
-	Serial.println(event);
+	Serial.println();
+	Serial.print(CODE_EVENT_INDEX SEPERATOR);
+	Serial.println(event, HEX);
 }
 
 

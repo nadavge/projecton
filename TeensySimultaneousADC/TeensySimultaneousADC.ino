@@ -12,12 +12,12 @@
 #define CODE_BUFFER "B"
 #define CODE_BUFFER_INFO "BI"
 #define CODE_EVENT_INDEX "EI"
+#define CODE_FREQUENCY "FS"
 #define CODE_INFO "IN"
 #define SEPERATOR " "
 
 void setup() 
 {
-
 	pinMode(LEDPIN, OUTPUT);
 	pinMode(A2, INPUT);
 	pinMode(A3, INPUT); 
@@ -32,7 +32,7 @@ void setup()
 	digitalWrite(LEDPIN,0);
 }
 
-#define BUFFERSIZE 2048
+#define BUFFERSIZE 9000
 #define SAMPLES BUFFERSIZE
 // The amount of samples to take after the event was spotted
 #define SAMPLES_EVENT (BUFFERSIZE/2)
@@ -141,9 +141,15 @@ void parseSerial()
 
 void printSamples()
 {
+	totalTime = stopTime - startTime;
+	double frequency = sampled*1000 / totalTime;
+	
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);
 	Serial.print("BUFFSIZE: ");
 	Serial.print(BUFFERSIZE,DEC);
+	Serial.println();
+	Serial.print(CODE_FREQUENCY SEPERATOR);
+	Serial.println(frequency);
 	serialWrite(buffer1, BUFFERSIZE, 1);
 	serialWrite(buffer2, BUFFERSIZE, 2);
 	serialWrite(buffer3, BUFFERSIZE, 3);	

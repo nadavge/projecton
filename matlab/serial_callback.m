@@ -1,6 +1,7 @@
 function serial_callback(obj, event)
 %SERIAL_CALLBACK Summary of this function goes here
 %   Detailed explanation goes here
+	CODE_MIC_READ= 'B\d+';
     CODE_IDX = 1:2;
     DATA_START = 4;
     LINE_FEED = 10;
@@ -17,17 +18,8 @@ function serial_callback(obj, event)
     display(code);
     display(data);
     
-    if strcmp(code, 'B1'),
-       A = zeros(length(data)/2, 1);
-       i = 1;
-       j = 1;
-       while i < length(data),
-          a = data(i:i+1);
-          i = i + 2;
-          A(j) = hex2dec(a);
-          j = j + 1;
-       end
-       
+    if regexp(code,CODE_MIC_READ),
+		mic_read(code(2), data); 
     end
 end
 

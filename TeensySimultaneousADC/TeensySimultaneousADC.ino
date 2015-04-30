@@ -138,14 +138,17 @@ void parseSerial()
 }
 
 
-void printSamples() 
+void printSamples()
 {
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);
 	Serial.print("BUFFSIZE: ");
 	Serial.print(BUFFERSIZE,DEC);
+	serialWrite(buffer1, BUFFERSIZE, 1);
+	serialWrite(buffer2, BUFFERSIZE, 2);
+	serialWrite(buffer3, BUFFERSIZE, 3);
+	serialWrite(buffer4, BUFFERSIZE, 4);
 	Serial.print(" Event: ");
 	Serial.println(event);
-	serialWrite(buffer,BUFFERSIZE, 1);	
 }
 
 
@@ -155,7 +158,7 @@ void serialWrite(byte *buffer,int siz, int id)
 {
 	int kk;
 	Serial.print(CODE_BUFFER);
-	Serial.print(id, HEX);
+	Serial.print(id, DEC);
 	Serial.print(SEPERATOR);
 	for (kk=0;kk<siz;kk++) 
 	{

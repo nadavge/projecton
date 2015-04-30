@@ -39,8 +39,8 @@ void setup()
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
 const int channelA3 = ADC::channel2sc1aADC1[3];
-const int channelA11 = ADC::channel2sc1aADC0[11];
 const int channelA10 = ADC::channel2sc1aADC1[10];
+const int channelA11 = ADC::channel2sc1aADC0[11];
 
 byte THRESHOLD = 180;
 
@@ -77,8 +77,8 @@ void run() {
 		for(i=SAMPLES, sampled=0; i--; ++sampled)
 		{
 			//TAKE THE READINGS
-			highSpeed8bitAnalogReadMacro(channelA2,channelA2,value1,value2);
-			highSpeed8bitAnalogReadMacro(channelA11, channelA10,value3,value4);
+			highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
+			highSpeed8bitAnalogReadMacro(channelA10,channelA11,value3,value4);
 			
 			buffer1[k] = value1;
 			buffer2[k] = value2;

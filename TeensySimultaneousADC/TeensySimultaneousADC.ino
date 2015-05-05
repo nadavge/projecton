@@ -24,6 +24,7 @@
 void setup() 
 {
 	pinMode(LEDPIN, OUTPUT);
+	// Set the microphones
 	pinMode(A2, INPUT);
 	pinMode(A3, INPUT); 
 	pinMode(A10, INPUT); 
@@ -37,7 +38,9 @@ void setup()
 	LED_OFF();
 }
 
+// Microphone buffer size
 #define BUFFERSIZE 9000
+// How many samples to read before checking for commands
 #define SAMPLES BUFFERSIZE
 // The amount of samples to take after the event was spotted
 #define SAMPLES_EVENT (BUFFERSIZE/2)
@@ -48,6 +51,7 @@ const int channelA3 = ADC::channel2sc1aADC1[3];
 const int channelA10 = ADC::channel2sc1aADC1[10];
 const int channelA11 = ADC::channel2sc1aADC0[11];
 
+// Threshold for noise detection - on surpassing send data after sampling more
 byte threshold = 180;
 
 byte buffer1[BUFFERSIZE] = {0};
@@ -60,13 +64,18 @@ byte value2 = 0;
 byte value3 = 0;
 byte value4 = 0;
 
+// Totally sampled in current loop (used for time calculation)
 int sampled = 0;
+// Loop timing variables
 long startTime = 0;
 long stopTime = 0;
 long totalTime = 0;
+// Holds the location of the event detected
 int event = NO_EVENT;
 
-int i = 0;
+// Counts how many samples are left
+int samplesLeft = 0;
+// Holds the current write location in buffers
 int k = 0;
 
 
@@ -75,12 +84,13 @@ void loop()
 	run();
 }
 
+// The loop of the teensy
 void run() {
 	while(true)
 	{
 		startTime = micros();
 		event = NO_EVENT;
-		for(i=SAMPLES, sampled=0; i--; ++sampled)
+		for(samplesLeft=SAMPLES, sampled=0; samplesLeft--; ++sampled)
 		{
 			//TAKE THE READINGS
 			highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
@@ -95,7 +105,7 @@ void run() {
 			if (value1 > threshold && event == NO_EVENT) 
 			{
 				event = k;
-				i = SAMPLES_EVENT;
+				samplesLeft = SAMPLES_EVENT;
 			}
 			
 			if (++k == BUFFERSIZE)
@@ -119,7 +129,7 @@ void run() {
 	}
 }
 
-
+// Handle commands sent through the serial
 void parseSerial() 
 {
 	char c = Serial.read();
@@ -143,7 +153,7 @@ void parseSerial()
 	}
 }
 
-
+// Print the microphone buffers and relevant information for interpretation
 void printSamples()
 {
 	totalTime = stopTime - startTime;
@@ -166,8 +176,7 @@ void printSamples()
 	Serial.flush();
 }
 
-//This should be optimized. Writing raw binary data seems to fail a lot of times
-//and I ended up loosing bytes. Maybe some form of flow-control should be used.
+// Print a buffer of bytes with hex encoding to the serial
 void serialWrite(byte *buffer,int siz, int id) 
 {
 	int kk;
@@ -185,6 +194,7 @@ void serialWrite(byte *buffer,int siz, int id)
 	WAIT_ACK();
 }
 
+// Print general info about the system
 void printInfo() 
 {
 	totalTime = stopTime-startTime;

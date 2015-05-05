@@ -1,4 +1,7 @@
 function mic_read(id, data)
+%MIC_READ Read the buffer sent from the microphone into the suiting vector
+%   id - the id of the microphone (1-4)
+%	data - the data sent in hex encoding. Each read is a byte (2 digits)
 	global s;
 	values = zeros(1, length(data)/2);
 	i = 1;

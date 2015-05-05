@@ -1,6 +1,7 @@
 function serial_callback(serial, event)
-%SERIAL_CALLBACK Summary of this function goes here
-%   Detailed explanation goes here
+%SERIAL_CALLBACK Handle serial input on termination (new line)
+%   Reads the input, seperates it to code and data, then handle
+%	the input according to the code provided (Mic read, freq, etc.)
 	CODE_MIC_READ = 'B\d+';
 	CODE_EVENT_INDEX = 'EI';
 	CODE_FREQUENCY = 'FS';
@@ -25,16 +26,17 @@ function serial_callback(serial, event)
     code = raw_data(CODE_IDX);
     data = raw_data(DATA_START:end);
     
-    %display(code);
-    %display(data);
-    
+	% Microphone buffer sent
     if regexp(code,CODE_MIC_READ),
 		ack(serial);
 		mic_read(code(2), data);
+	% An the event location
 	elseif regexp(code, CODE_EVENT_INDEX),
 		handle_event(data);
+	% Read the frequency
 	elseif regexp(code, CODE_FREQUENCY),
 		freq_read(data);
+	% Print a debug serial write
 	elseif regexp(code, CODE_DEBUG),
 		display(data);
     end

@@ -36,6 +36,8 @@ void setup()
 	LED_ON();
 	delay(2000);
 	LED_OFF();
+	
+	WAIT_ACK();
 }
 
 // Microphone buffer size

@@ -14,7 +14,12 @@
 #define CODE_EVENT_INDEX "EI"
 #define CODE_FREQUENCY "FS"
 #define CODE_INFO "IN"
+#define CODE_DEBUG "DB"
 #define SEPERATOR " "
+
+#define LED_ON() digitalWrite(LEDPIN,1)
+#define LED_OFF() digitalWrite(LEDPIN,0)
+#define WAIT_ACK() LED_ON(); while (! Serial.available()); Serial.read(); LED_OFF()
 
 void setup() 
 {
@@ -27,9 +32,9 @@ void setup()
 
 	Serial.begin(115200);
 	//BLINK LED, WE ARE ALIVE
-	digitalWrite(LEDPIN,1);
+	LED_ON();
 	delay(2000);
-	digitalWrite(LEDPIN,0);
+	LED_OFF();
 }
 
 #define BUFFERSIZE 9000
@@ -43,7 +48,7 @@ const int channelA3 = ADC::channel2sc1aADC1[3];
 const int channelA10 = ADC::channel2sc1aADC1[10];
 const int channelA11 = ADC::channel2sc1aADC0[11];
 
-byte THRESHOLD = 180;
+byte threshold = 180;
 
 byte buffer1[BUFFERSIZE] = {0};
 byte buffer2[BUFFERSIZE] = {0};
@@ -87,7 +92,7 @@ void run() {
 			buffer4[k] = value4;
 			
 			//CHECK FOR EVENTS
-			if (value1 > THRESHOLD && event != NO_EVENT) 
+			if (value1 > threshold && event == NO_EVENT) 
 			{
 				event = k;
 				i = SAMPLES_EVENT;
@@ -102,7 +107,7 @@ void run() {
 		stopTime = micros();
 		
 		//WAS AN EVENT BEEN DETECTED?
-		if (event != NO_EVENT) 
+		if (event != NO_EVENT)
 		{
 			printInfo();
 			printSamples(); 
@@ -112,7 +117,7 @@ void run() {
 		// TODO Signal the user if an event was spotted early on the loop
 		if (Serial.available()) parseSerial();
 	}
-} // Ends while
+}
 
 
 void parseSerial() 
@@ -128,10 +133,10 @@ void parseSerial()
 		printSamples();
 		break;
 	case '+': 
-		THRESHOLD += 5;
+		threshold += 5;
 		break;						 
 	case '-': 
-		THRESHOLD -= 5;
+		threshold -= 5;
 		break;						 
 	default:	
 		break;
@@ -142,24 +147,24 @@ void parseSerial()
 void printSamples()
 {
 	totalTime = stopTime - startTime;
-	double frequency = sampled*1000 / totalTime;
+	int frequency = sampled*1000 / totalTime;
 	
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);
-	Serial.print("BUFFSIZE: ");
-	Serial.print(BUFFERSIZE,DEC);
-	Serial.println();
+	Serial.println(BUFFERSIZE, HEX);
+	
 	Serial.print(CODE_FREQUENCY SEPERATOR);
-	Serial.println(frequency);
+	Serial.println(frequency, HEX);
+	
 	serialWrite(buffer1, BUFFERSIZE, 1);
 	serialWrite(buffer2, BUFFERSIZE, 2);
 	serialWrite(buffer3, BUFFERSIZE, 3);	
 	serialWrite(buffer4, BUFFERSIZE, 4);
-	Serial.print(" Event: ");
-	Serial.println();
+	
 	Serial.print(CODE_EVENT_INDEX SEPERATOR);
 	Serial.println(event, HEX);
+	
+	Serial.flush();
 }
-
 
 //This should be optimized. Writing raw binary data seems to fail a lot of times
 //and I ended up loosing bytes. Maybe some form of flow-control should be used.
@@ -176,7 +181,8 @@ void serialWrite(byte *buffer,int siz, int id)
 		//Serial.print(" ");
 	}
 	Serial.println();
-	Serial.flush();
+
+	WAIT_ACK();
 }
 
 void printInfo() 
@@ -190,7 +196,7 @@ void printInfo()
 	Serial.print(sampled,DEC);
 	Serial.print(" Samples/mSec: ");
 	Serial.print(samplesPerSec,7);
-	Serial.print(" Threshold: ");
-	Serial.println(THRESHOLD,DEC);
+	Serial.print(" threshold: ");
+	Serial.println(threshold,DEC);
 	Serial.flush();
 }

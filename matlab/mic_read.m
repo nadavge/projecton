@@ -1,4 +1,5 @@
 function mic_read(id, data)
+	global s;
 	values = zeros(1, length(data)/2);
 	i = 1;
     j = 1;

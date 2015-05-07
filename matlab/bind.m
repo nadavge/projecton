@@ -1,4 +1,4 @@
-BAUD_RATE = 115200;
+BAUD_RATE = 12000000;
 s = serial('COM12','BaudRate',BAUD_RATE);
 s.BytesAvailableFcnMode = 'terminator';
 s.Terminator = 13; % New line character

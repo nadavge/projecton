@@ -6,7 +6,6 @@ function serial_callback(serial, event)
 	CODE_EVENT_INDEX = 'EI';
 	CODE_FREQUENCY = 'FS';
 	CODE_DEBUG = 'DB';
-	
     CODE_IDX = 1:2;
     DATA_START = 4;
     LINE_FEED = 10;
@@ -28,14 +27,16 @@ function serial_callback(serial, event)
     
 	% Microphone buffer sent
     if regexp(code,CODE_MIC_READ),
-		ack(serial);
 		mic_read(code(2), data);
+        ack(serial);
 	% An the event location
 	elseif regexp(code, CODE_EVENT_INDEX),
 		handle_event(data);
 	% Read the frequency
 	elseif regexp(code, CODE_FREQUENCY),
+		tic
 		freq_read(data);
+		ack(serial);
 	% Print a debug serial write
 	elseif regexp(code, CODE_DEBUG),
 		display(data);

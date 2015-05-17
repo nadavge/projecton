@@ -1,7 +1,8 @@
 function handle_event(raw_index)
 %HANDLE_EVENT Handle the event of detection
 %   Reads the index in which the event occured in hex encoding
-	NO_EVENT = -1
+	global buffer1 buffer2 buffer3 buffer4 fs
+	NO_EVENT = -1;
 	
 	index = hex32dec(raw_index);
 
@@ -12,10 +13,6 @@ function handle_event(raw_index)
 	
 	% Else read the buffers, rotate them so the event is in the middle of buffer1
 	% and handle it with master_of_puppets
-	buffer1 = eval('buffer1');
-	buffer2 = eval('buffer2');
-	buffer3 = eval('buffer3');
-	buffer4 = eval('buffer4');
 	
 	buff_end = length(buffer1);
 	buff_mid = floor(buff_end/2);
@@ -28,12 +25,13 @@ function handle_event(raw_index)
 		indexes_B = 1:(buff_end - (buff_mid - index));
 	end
 	
-	buffer1 = [ buffer1(indexes_A) buffer1(indexes_B) ];
-	buffer2 = [ buffer2(indexes_A) buffer2(indexes_B) ];
-	buffer3 = [ buffer3(indexes_A) buffer3(indexes_B) ];
-	buffer4 = [ buffer4(indexes_A) buffer4(indexes_B) ];
+	toc
+	% buffer1 = [ buffer1(indexes_A) buffer1(indexes_B) ];
+	% buffer2 = [ buffer2(indexes_A) buffer2(indexes_B) ];
+	% buffer3 = [ buffer3(indexes_A) buffer3(indexes_B) ];
+	% buffer4 = [ buffer4(indexes_A) buffer4(indexes_B) ];
 	
-	fs = eval('fs');
 	
-	master_of_puppets(buffer1, buffer2, buffer3, buffer4, fs);
+	
+	% master_of_puppets(buffer1, buffer2, buffer3, buffer4, fs);
 end

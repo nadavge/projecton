@@ -36,6 +36,8 @@ void setup()
 	LED_ON();
 	delay(2000);
 	LED_OFF();
+	
+	WAIT_ACK();
 }
 
 // Microphone buffer size
@@ -148,7 +150,7 @@ void parseSerial()
 	case '-': 
 		threshold -= 5;
 		break;						 
-	default:	
+	default:
 		break;
 	}
 }
@@ -164,6 +166,7 @@ void printSamples()
 	
 	Serial.print(CODE_FREQUENCY SEPERATOR);
 	Serial.println(frequency, HEX);
+	WAIT_ACK();
 	
 	serialWrite(buffer1, BUFFERSIZE, 1);
 	serialWrite(buffer2, BUFFERSIZE, 2);

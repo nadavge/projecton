@@ -1,6 +1,7 @@
-//FOR 2 ADC
 #include <ADC.h>
 #include "Teensy31FastADC.h"
+
+//======================== DEFINITIONS =============================
 
 // Teensy 3.1 has the LED on pin 13
 #define LEDPIN 13
@@ -19,26 +20,15 @@
 
 #define LED_ON() digitalWrite(LEDPIN,1)
 #define LED_OFF() digitalWrite(LEDPIN,0)
+
 #define WAIT_ACK() LED_ON(); while (! Serial.available()); Serial.read(); LED_OFF()
-
-void setup() 
-{
-	pinMode(LEDPIN, OUTPUT);
-	// Set the microphones
-	pinMode(A2, INPUT);
-	pinMode(A3, INPUT); 
-	pinMode(A10, INPUT); 
-	pinMode(A11, INPUT);
-	highSpeed8bitADCSetup();
-
-	Serial.begin(115200);
-	//BLINK LED, WE ARE ALIVE
-	LED_ON();
-	delay(2000);
-	LED_OFF();
 	
-	WAIT_ACK();
-}
+#define CHECK_CMD() \
+	if (Serial.available())\
+	{\
+		LED_OFF();\
+		parseSerial();\
+	}
 
 // Microphone buffer size
 #define BUFFERSIZE 9000
@@ -47,6 +37,15 @@ void setup()
 // The amount of samples to take after the event was spotted
 #define SAMPLES_EVENT (BUFFERSIZE/2)
 #define NO_EVENT -1
+
+enum State
+{
+	UNBOUND,
+	WAITING,
+	RUNNING
+};
+
+//======================== GLOBALS =================================
 
 const int channelA2 = ADC::channel2sc1aADC0[2];
 const int channelA3 = ADC::channel2sc1aADC1[3];
@@ -80,15 +79,116 @@ int samplesLeft = 0;
 // Holds the current write location in buffers
 int k = 0;
 
+// The state of the code execution
+State state = UNBOUND;
+
+//======================== STATE CHANGERS ===========================
+
+inline void state_bind()
+{
+	if (state == UNBOUND)
+	{
+		state = WAITING;
+	}
+}
+
+inline void state_unbind()
+{
+	state = UNBOUND;
+}
+
+inline void state_wait()
+{
+	if (state != UNBOUND)
+	{
+		state = WAITING;
+	}
+}
+
+inline void state_run()
+{
+	if (state != UNBOUND)
+	{
+		state = RUNNING;
+	}
+}
+
+//======================== CONTROL CODE =============================
+
+void setup() 
+{
+	pinMode(LEDPIN, OUTPUT);
+	// Set the microphones
+	pinMode(A2, INPUT);
+	pinMode(A3, INPUT); 
+	pinMode(A10, INPUT); 
+	pinMode(A11, INPUT);
+	highSpeed8bitADCSetup();
+
+	Serial.begin(115200);
+	//BLINK LED, WE ARE ALIVE
+	LED_ON();
+	delay(2000);
+	LED_OFF();
+}
 
 void loop() 
 {
-	run();
+	switch (state)
+	{
+	case UNBOUND:
+		unbound();
+		break;
+	case WAITING:
+		waiting();
+		break;
+	case RUNNING:
+		running();
+		break;
+	}
 }
 
-// The loop of the teensy
-void run() {
-	while(true)
+void unbound()
+{
+	LED_ON();
+	
+	for (int i=0; i < 2; ++i)
+	{
+		CHECK_CMD();
+		delay(100);
+	}
+	
+	LED_OFF();
+	
+	for (int i=0; i < 16; ++i)
+	{
+		CHECK_CMD();
+		delay(100);
+	}
+}
+
+void waiting()
+{
+	LED_ON();
+	for (int i=0; i < 2; ++i)
+	{
+		CHECK_CMD();
+		delay(100);
+	}
+	
+	LED_OFF();
+	
+	for (int i=0; i < 4; ++i)
+	{
+		CHECK_CMD();
+		delay(100);
+	}
+}
+
+void running()
+{
+	// Inner loop allows faster operation (no function switch overhead)
+	while(state == RUNNING)
 	{
 		startTime = micros();
 		event = NO_EVENT;
@@ -136,6 +236,12 @@ void parseSerial()
 {
 	char c = Serial.read();
 
+	// If unbound, allow only bounding
+	if (state == UNBOUND && c != 'b')
+	{
+		return;
+	}
+	
 	switch (c) 
 	{
 	case 'p': 
@@ -144,13 +250,23 @@ void parseSerial()
 	case 's': 
 		printSamples();
 		break;
+	case 'b':
+		state_bind();
+		break;
+	case 'u':
+		state_unbind();
+		break;
+	case 'w':
+		state_wait();
+		break;
+	case 'r':
+		state_run();
+		break;
 	case '+': 
 		threshold += 5;
 		break;						 
-	case '-': 
+	case '-':
 		threshold -= 5;
-		break;						 
-	default:
 		break;
 	}
 }

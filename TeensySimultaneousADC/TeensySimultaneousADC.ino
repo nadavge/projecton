@@ -262,9 +262,12 @@ void parseSerial()
 	case 'r':
 		state_run();
 		break;
+	case 'f':
+		fake_send();
+		break;
 	case '+': 
 		threshold += 5;
-		break;						 
+		break;			 
 	case '-':
 		threshold -= 5;
 		break;
@@ -295,6 +298,44 @@ void printSamples()
 	Serial.flush();
 }
 
+// Print fake info
+void fake_send()
+{
+	int frequency = 182;
+	
+	Serial.print(CODE_BUFFER_INFO SEPERATOR);
+	Serial.println(BUFFERSIZE, HEX);
+	
+	Serial.print(CODE_FREQUENCY SEPERATOR);
+	Serial.println(frequency, HEX);
+	WAIT_ACK();
+	
+	for (int bufferId=1; bufferId <= 4; ++bufferId)
+	{
+		Serial.print(CODE_BUFFER);
+		Serial.print(bufferId, DEC);
+		Serial.print(SEPERATOR);
+		
+		for (int kk=0;kk< BUFFERSIZE;kk++) 
+		{
+			if ((kk&255) < 0x10)
+			{
+				Serial.print('0');
+			}
+			Serial.print(kk&255, HEX);
+		}
+		
+		Serial.println();
+
+		WAIT_ACK();
+	}
+	
+	Serial.print(CODE_EVENT_INDEX SEPERATOR);
+	Serial.println(event, HEX);
+	
+	Serial.flush();
+}
+
 // Print a buffer of bytes with hex encoding to the serial
 void serialWrite(byte *buffer,int siz, int id) 
 {
@@ -304,6 +345,10 @@ void serialWrite(byte *buffer,int siz, int id)
 	Serial.print(SEPERATOR);
 	for (kk=0;kk<siz;kk++) 
 	{
+		if (buffer[kk] < 0x10)
+		{
+			Serial.print('0');
+		}
 		Serial.print(buffer[kk],HEX);
 		// Send without spaces
 		//Serial.print(" ");

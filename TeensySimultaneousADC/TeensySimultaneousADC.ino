@@ -306,6 +306,7 @@ void parseSerial()
 void printSamples()
 {
 	totalTime = stopTime - startTime;
+	// TODO Change accuracy of this by multiplication
 	int frequency = sampled*1000 / totalTime;
 	
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);

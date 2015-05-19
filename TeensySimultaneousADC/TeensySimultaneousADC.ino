@@ -21,7 +21,11 @@
 #define LED_ON() digitalWrite(LEDPIN,1)
 #define LED_OFF() digitalWrite(LEDPIN,0)
 
-#define WAIT_ACK() LED_ON(); while (! Serial.available()); Serial.read(); LED_OFF()
+#define WAIT_ACK() \
+	LED_ON();\
+	while (! Serial.available());\
+	Serial.read();\
+	LED_OFF()
 	
 #define CHECK_CMD() \
 	if (Serial.available())\
@@ -232,10 +236,8 @@ void running()
 }
 
 // Handle commands sent through the serial
-void parseSerial() 
+void parseSerial(char c)
 {
-	char c = Serial.read();
-
 	// If unbound, allow only bounding
 	if (state == UNBOUND && c != 'b')
 	{
@@ -272,6 +274,13 @@ void parseSerial()
 		threshold -= 5;
 		break;
 	}
+}
+
+// Handle commands waiting in the serial
+void parseSerial()
+{
+	char c = Serial.read();
+	parseSerial(c);
 }
 
 // Print the microphone buffers and relevant information for interpretation

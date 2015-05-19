@@ -46,7 +46,8 @@ enum State
 {
 	UNBOUND,
 	WAITING,
-	RUNNING
+	RUNNING,
+	ONCE
 };
 
 //======================== GLOBALS =================================
@@ -117,6 +118,14 @@ inline void state_run()
 	}
 }
 
+inline void state_once()
+{
+	if (state != UNBOUND)
+	{
+		state = ONCE;
+	}
+}
+
 //======================== CONTROL CODE =============================
 
 void setup() 
@@ -147,6 +156,7 @@ void loop()
 		waiting();
 		break;
 	case RUNNING:
+	case ONCE:
 		running();
 		break;
 	}
@@ -192,7 +202,7 @@ void waiting()
 void running()
 {
 	// Inner loop allows faster operation (no function switch overhead)
-	while(state == RUNNING)
+	while(state == RUNNING || state == ONCE)
 	{
 		startTime = micros();
 		event = NO_EVENT;
@@ -225,6 +235,12 @@ void running()
 		//WAS AN EVENT BEEN DETECTED?
 		if (event != NO_EVENT)
 		{
+			// If set to run once, change to waiting
+			if (state == ONCE)
+			{
+				state = WAITING;
+			}
+			
 			printInfo();
 			printSamples(); 
 		}
@@ -263,6 +279,9 @@ void parseSerial(char c)
 		break;
 	case 'r':
 		state_run();
+		break;
+	case 'o':
+		state_once();
 		break;
 	case 'f':
 		fake_send();

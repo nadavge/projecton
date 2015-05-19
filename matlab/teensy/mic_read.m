@@ -3,6 +3,7 @@ function mic_read(id, data)
 %   id - the id of the microphone (1-4)
 %	data - the data sent in hex encoding. Each read is a byte (2 digits)
 	global s;
+	global buffer;
 	values = zeros(1, length(data)/2);
 	i = 1;
     j = 1;
@@ -13,5 +14,5 @@ function mic_read(id, data)
 		j = j + 1;
 	end
 	
-	assignin('base', strcat('buffer', num2str(id)), values);
+	buffer(id, :) = values;
 end

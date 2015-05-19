@@ -27,7 +27,7 @@ function serial_callback(serial, event)
     
 	% Microphone buffer sent
     if regexp(code,CODE_MIC_READ),
-		mic_read(code(2), data);
+		mic_read(str2num(code(2)), data);
         ack(serial);
 	% An the event location
 	elseif regexp(code, CODE_EVENT_INDEX),

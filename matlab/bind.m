@@ -8,3 +8,7 @@ s.InputBufferSize = 20000;
 fopen(s);
 % Send a bind command
 fprintf(s, 'b');
+
+global buffer fs;
+buffer = [];
+fs = 0;

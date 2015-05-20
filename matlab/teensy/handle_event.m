@@ -30,7 +30,7 @@ function handle_event(raw_index)
 	buffer = cat(2, buffer(:, indexes_A), buffer(:, indexes_B));
 	
 	if mop_enabled,
-		master_of_puppets(buffer(1, :), buffer(2, :), buffer(3, :), buffer(4, :), fs);
+		master_of_puppets(buffer, fs);
 	end
 	
 end

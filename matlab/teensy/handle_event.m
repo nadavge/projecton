@@ -1,7 +1,7 @@
 function handle_event(raw_index)
 %HANDLE_EVENT Handle the event of detection
 %   Reads the index in which the event occured in hex encoding
-	global buffer fs
+	global buffer fs mop_enabled;
 	NO_EVENT = -1;
 	
 	index = hex32dec(raw_index);
@@ -29,5 +29,8 @@ function handle_event(raw_index)
 	
 	buffer = cat(2, buffer(:, indexes_A), buffer(:, indexes_B));
 	
-	%master_of_puppets(buffer(1, :), buffer(2, :), buffer(3, :), buffer(4, :), fs);
+	if mop_enabled,
+		master_of_puppets(buffer(1, :), buffer(2, :), buffer(3, :), buffer(4, :), fs);
+	end
+	
 end

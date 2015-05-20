@@ -1,7 +1,7 @@
 function run
     global s;
     
-    if s,
+    if ~isempty(s),
         fprintf(s, 'r');
     end
 end

@@ -1,7 +1,7 @@
 function wait
     global s;
     
-    if s,
+    if ~isempty(s),
         fprintf(s, 'w');
     end
 end

@@ -1,7 +1,7 @@
-% Send an unbind command
-fprintf(s, 'u');
-fclose(s);
-delete(s);
-clear s;
-clear buffer;
-clear fs;
+function unbind
+    % Send an unbind command
+    global s;
+    fprintf(s, 'u');
+    fclose(s);
+    delete(s);
+end

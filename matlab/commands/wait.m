@@ -1,3 +1,7 @@
-if exist('s'),
-	fprintf(s, 'w');
+function wait
+    global s;
+    
+    if s,
+        fprintf(s, 'w');
+    end
 end

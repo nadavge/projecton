@@ -1,3 +1,7 @@
-if exist('s'),
-	fprintf(s, 'o');
+function once
+    global s;
+    
+    if s,
+        fprintf(s, 'o');
+    end
 end

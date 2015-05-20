@@ -1,5 +1,12 @@
 function bind(com_port)
     BAUD_RATE = 12000000;
+	
+	% Default com port for teensy
+	if ~exist('com_port'),
+		display('Using def. port (3)')
+		com_port = 3;
+	end
+		
     global buffer fs s;
     buffer = [];
     fs = 0;

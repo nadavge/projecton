@@ -3,8 +3,12 @@
 
 //======================== DEFINITIONS =============================
 
-// Teensy 3.1 has the LED on pin 13
+// PINS
 #define LEDPIN 13
+#define PIN1 2
+#define PIN2 3
+#define PIN3 10
+#define PIN4 11
 
 /*
  * Used for communication. Each data sent starts with 3 bytes stating
@@ -52,10 +56,18 @@ enum State
 
 //======================== GLOBALS =================================
 
-const int channelA2 = ADC::channel2sc1aADC0[2];
-const int channelA3 = ADC::channel2sc1aADC1[3];
-const int channelA10 = ADC::channel2sc1aADC1[10];
-const int channelA11 = ADC::channel2sc1aADC0[11];
+/* Pins USABLE on ADC0
+ * 0, 1, ..., 13
+ * Pins USABLE on ADC1
+ * 2, 3, 10, 12, 13
+ *
+ * Channel 11 must be on ADC0, since on ADC1 it is disabled (See ADC_Module == 31)
+ * This requires consideration when using the fast read, since the ADC0 should go first
+ */
+const int channel1 = ADC::channel2sc1aADC1[PIN1];
+const int channel2 = ADC::channel2sc1aADC0[PIN2];
+const int channel3 = ADC::channel2sc1aADC1[PIN3];
+const int channel4 = ADC::channel2sc1aADC0[PIN4];
 
 // Threshold for noise detection - on surpassing send data after sampling more
 byte threshold = 180;
@@ -132,10 +144,10 @@ void setup()
 {
 	pinMode(LEDPIN, OUTPUT);
 	// Set the microphones
-	pinMode(A2, INPUT);
-	pinMode(A3, INPUT); 
-	pinMode(A10, INPUT); 
-	pinMode(A11, INPUT);
+	pinMode(PIN1, INPUT);
+	pinMode(PIN2, INPUT);
+	pinMode(PIN3, INPUT);
+	pinMode(PIN4, INPUT);
 	highSpeed8bitADCSetup();
 
 	Serial.begin(115200);
@@ -209,8 +221,8 @@ void running()
 		for(samplesLeft=SAMPLES, sampled=0; samplesLeft--; ++sampled)
 		{
 			//TAKE THE READINGS
-			highSpeed8bitAnalogReadMacro(channelA2,channelA3,value1,value2);
-			highSpeed8bitAnalogReadMacro(channelA10,channelA11,value3,value4);
+			highSpeed8bitAnalogReadMacro(channel1,channel2,value1,value2);
+			highSpeed8bitAnalogReadMacro(channel3,channel4,value3,value4);
 			
 			buffer1[k] = value1;
 			buffer2[k] = value2;

@@ -8,7 +8,12 @@
 
 
 //defined as a macro its faster
-#define highSpeed8bitAnalogReadMacro(channel1, channel2, value1, value2) ADC0_SC1A = channel1;ADC1_SC1A = channel2;while (!(ADC0_SC1A & ADC1_SC1A & ADC_SC1_COCO)) {} value1 = ADC0_RA;value2 = ADC1_RA;
+#define highSpeed8bitAnalogReadMacro(ch1, ch0, val1, val0)\
+	ADC0_SC1A = ch0;\
+	ADC1_SC1A = ch1;\
+	while (!(ADC0_SC1A & ADC1_SC1A & ADC_SC1_COCO));\
+	val0 = ADC0_RA;\
+	val1 = ADC1_RA;
 
 /*
 FUNCTION PSEUDOCODE FOR MACRO, of course we could not pass value1 and value2 like this to a function (should be pointers or return a struct)

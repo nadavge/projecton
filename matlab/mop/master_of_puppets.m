@@ -5,27 +5,14 @@ function [direction] = master_of_puppets(sounds, fs)
 %     fs = 44100;
     tdoa = [0 0 0 0];
     
-    snd1 = sounds(1,:);
-    snd2 = sounds(2,:);
-    snd3 = sounds(3,:);
-    snd4 = sounds(4,:);
-
-    [isShot, tdoa(2)] = find_delay(snd2,snd1, fs);
-    if (isShot == 0)
-        direction = -1000;
-        return
+    for i = 2:4
+        [isShot, tdoa(i)] = find_delay(sounds(i,:),sounds(1,:), fs);
+        if (~isShot)
+            direction = -1000;
+            return
+        end
     end
-    [isShot, tdoa(3)] = find_delay(snd3,snd1, fs);
-    if (isShot == 0)
-        direction = -1000;
-        return
-    end
-    [isShot, tdoa(4)] = find_delay(snd4,snd1, fs);
-    if (isShot == 0)
-        direction = -1000;
-        return
-    end
-
+    
 %     % print the tdoa for debug:
     tdoa
 

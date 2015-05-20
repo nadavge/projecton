@@ -1,5 +1,5 @@
 function enable_mop
-	global mop_enabled
+	global mop_enabled;
 	
-	mop_enabled = 1
+	mop_enabled = 1;
 end

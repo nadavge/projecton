@@ -14,5 +14,5 @@ function mic_read(id, data)
 		j = j + 1;
 	end
 	
-	buffer(id, :) = values;
+	buffer(id, :) = values - 127.5;
 end

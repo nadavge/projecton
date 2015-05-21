@@ -1,6 +1,6 @@
 function bind(com_port)
-    BAUD_RATE = 12000000;
-	global buffer fs s mop_enabled;
+    BAUD_RATE = 12000000; % bps
+	global buffer fs s mop_enabled arc_length;
 	
 	% Default com port for teensy
 	if ~exist('com_port'),
@@ -9,8 +9,9 @@ function bind(com_port)
 	end
 	
 	mop_enabled = 0;
+	arc_length = 4; % Meters
     buffer = [];
-    fs = 0;
+    fs = 0; % Hz
 
     s = serial(strcat('COM', num2str(com_port)),'BaudRate',BAUD_RATE);
     s.BytesAvailableFcnMode = 'terminator';

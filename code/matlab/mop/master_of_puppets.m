@@ -4,10 +4,9 @@ function [direction] = master_of_puppets(sounds, fs)
 %	fs - the sample frequency of the microphones
 %	Using the sounds, use different sound analysis algorithms to receive
 %	the direction of the gunfire
-
+	global arc_length;
     close all;
     
-    arcLength = 4;
     tdoa = [0 0 0 0];
     
 	% Find the tdoa of each microphone relative to microphone no. 1
@@ -22,5 +21,5 @@ function [direction] = master_of_puppets(sounds, fs)
     % print the tdoa for debug:
     tdoa
 
-    direction = Johnny(tdoa, arcLength);
+    direction = Johnny(tdoa, arc_length);
 end

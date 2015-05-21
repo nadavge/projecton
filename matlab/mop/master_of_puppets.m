@@ -1,6 +1,8 @@
 function [direction] = master_of_puppets(sounds, fs)
     close all;
 
+    sounds = sounds - 127.5;
+    
     arcLength = 4;
 %     fs = 44100;
     tdoa = [0 0 0 0];

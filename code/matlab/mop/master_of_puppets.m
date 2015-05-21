@@ -1,10 +1,7 @@
 function [direction] = master_of_puppets(sounds, fs)
     close all;
-
-    sounds = sounds - 127.5;
     
     arcLength = 4;
-%     fs = 44100;
     tdoa = [0 0 0 0];
     
     for i = 2:4
@@ -15,7 +12,7 @@ function [direction] = master_of_puppets(sounds, fs)
 %         end
     end
     
-%     % print the tdoa for debug:
+    % print the tdoa for debug:
     tdoa
 
     direction = Johnny(tdoa, arcLength);

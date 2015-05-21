@@ -19,10 +19,12 @@ Tells the teensy to wait
 
 ####run
 Tells the teensy to run sampling.
+
 By default, the MOP is not run unless told to.
 
 ####once
-Tells the teensy to run sampling, but once spotted a gunfire - stop
+Tells the teensy to run sampling, but once spotted a gunfire - stop.
+
 By default, the MOP is not run unless told to.
 
 ####unbind

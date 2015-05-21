@@ -43,6 +43,7 @@ Set the arc_length used by MOP *in meters*.
 
 ####plotem
 Plots the microphone readings in the following color order:
+
 1. red
 2. green
 3. blue

@@ -4,30 +4,17 @@ function handle_event(raw_index)
 	global buffer fs mop_enabled;
 	NO_EVENT = -1;
 	
-	index = hex32dec(raw_index);
+	event_index = hex32dec(raw_index);
 
-	% If no event occured do nothing 
-	if index == NO_EVENT,
+	% If no event occurred do nothing
+	if event_index == NO_EVENT,
 		return
-	end
-	
-	% Else read the buffers, rotate them so the event is in the middle of buffer1
-	% and handle it with master_of_puppets
-	
-	buff_end = size(buffer, 2);
-	buff_mid = floor(buff_end/2);
-
-	if index > buff_mid
-		indexes_A = (index - buff_mid):buff_end;
-		indexes_B = 1:(index - buff_mid - 1);
-	else
-		indexes_A = (buff_end - (buff_mid - index) + 1):buff_end;
-		indexes_B = 1:(buff_end - (buff_mid - index));
 	end
 	
 	toc
 	
-	buffer = cat(2, buffer(:, indexes_A), buffer(:, indexes_B));
+	% Rotate the buffers so the event is in the desired location from 
+	buffer = rotate_buffers(buffer, event_index, 0.5);
 	
 	if mop_enabled,
 		master_of_puppets(buffer, fs);

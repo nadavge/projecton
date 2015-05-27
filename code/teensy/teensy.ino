@@ -96,6 +96,28 @@ int samplesLeft = 0;
 // Holds the current write location in buffers
 int k = 0;
 
+// Whether or not the threshold was reached
+int thresholdCount = 0;
+
+//TODO determine real value with yoel
+#define THRESHOLD_LIFE 1000
+#define THRESHOLD_MICS 2
+
+/*
+ * Holds a number, decreasing each iteration. While > 0 means the threshold
+ *  is still alive. If the threshold wasn't detected yet/too long ago, 0
+ */
+int resetThresh1 = 0;
+int resetThresh2 = 0;
+int resetThresh3 = 0;
+int resetThresh4 = 0;
+
+#define RESET_THRESH() \
+	resetThresh1 = 0;\
+	resetThresh2 = 0;\
+	resetThresh3 = 0;\
+	resetThresh4 = 0
+
 // The state of the code execution
 State state = UNBOUND;
 
@@ -213,6 +235,8 @@ void waiting()
 
 void running()
 {
+	RESET_THRESH();
+	
 	// Inner loop allows faster operation (no function switch overhead)
 	while(state == RUNNING || state == ONCE)
 	{
@@ -229,8 +253,32 @@ void running()
 			buffer3[k] = value3;
 			buffer4[k] = value4;
 			
+			// Check for threshold pass
+			if (value1 > threshold)
+			{
+				resetThresh1 = THRESHOLD_LIFE;
+			}
+			if (value2 > threshold)
+			{
+				resetThresh2 = THRESHOLD_LIFE;
+			}
+			if (value3 > threshold)
+			{
+				resetThresh3 = THRESHOLD_LIFE;
+			}
+			if (value4 > threshold)
+			{
+				resetThresh4 = THRESHOLD_LIFE;
+			}
+			
+			// Count how many mics were above the threshold lately
+			thresholdCount = resetThresh1 ? 1 : 0;
+			thresholdCount += resetThresh2 ? 1 : 0;
+			thresholdCount += resetThresh3 ? 1 : 0;
+			thresholdCount += resetThresh4 ? 1 : 0;
+						
 			//CHECK FOR EVENTS
-			if (value1 > threshold && event == NO_EVENT) 
+			if (thresholdCount > THRESHOLD_MICS && event == NO_EVENT) 
 			{
 				event = k;
 				samplesLeft = SAMPLES_EVENT;
@@ -240,6 +288,12 @@ void running()
 			{
 				k = 0;
 			}
+			
+			// Decrease resetThresh
+			resetThresh1 = resetThresh1 > 0 ? resetThresh1-1 : 0;
+			resetThresh2 = resetThresh2 > 0 ? resetThresh2-1 : 0;
+			resetThresh3 = resetThresh3 > 0 ? resetThresh3-1 : 0;
+			resetThresh4 = resetThresh4 > 0 ? resetThresh4-1 : 0;
 		}
 		
 		stopTime = micros();
@@ -254,12 +308,18 @@ void running()
 			}
 			
 			printInfo();
-			printSamples(); 
+			printSamples();
+			
+			RESET_THRESH();
 		}
 	
 		//DID WE RECEIVE COMMANDS?
 		// TODO Signal the user if an event was spotted early on the loop
-		if (Serial.available()) parseSerial();
+		if (Serial.available())
+		{
+			RESET_THRESH();
+			parseSerial();
+		}
 	}
 }
 

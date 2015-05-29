@@ -22,6 +22,7 @@
 #define CODE_DEBUG "DB"
 #define SEPERATOR " "
 #define EMPTY_BUFFER_VALUE 127
+#define FREQ_FACTOR 100000
 
 #define LED_ON() digitalWrite(LEDPIN,1)
 #define LED_OFF() digitalWrite(LEDPIN,0)
@@ -330,8 +331,7 @@ void parseSerial()
 void printSamples()
 {
 	totalTime = stopTime - startTime;
-	// TODO Change accuracy of this by multiplication
-	int frequency = sampled*1000 / totalTime;
+	int frequency = sampled*FREQ_FACTOR / totalTime;
 	
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);
 	Serial.println(BUFFERSIZE, HEX);
@@ -354,7 +354,7 @@ void printSamples()
 // Print fake info
 void fake_send()
 {
-	int frequency = 182;
+	int frequency = 0.12345f * FREQ_FACTOR;
 	
 	Serial.print(CODE_BUFFER_INFO SEPERATOR);
 	Serial.println(BUFFERSIZE, HEX);

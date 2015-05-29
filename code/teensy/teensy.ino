@@ -384,7 +384,7 @@ void fake_send()
 	}
 	
 	Serial.print(CODE_EVENT_INDEX SEPERATOR);
-	Serial.println(event, HEX);
+	Serial.println(NO_EVENT, HEX);
 	
 	Serial.flush();
 }
@@ -415,14 +415,15 @@ void serialWrite(byte *buffer,int siz, int id)
 void printInfo() 
 {
 	totalTime = stopTime-startTime;
-	double samplesPerSec = sampled*1000.0/totalTime;
+	// Get the frequency in KHz
+	float frequency = sampled*1000.0f / totalTime;
 	Serial.print(CODE_INFO SEPERATOR);
 	Serial.print("T: ");
 	Serial.print(totalTime);
 	Serial.print(" Sampled: ");
 	Serial.print(sampled,DEC);
 	Serial.print(" Samples/mSec: ");
-	Serial.print(samplesPerSec,7);
+	Serial.print(frequency, 2);
 	Serial.print(" threshold: ");
 	Serial.println(threshold,DEC);
 	Serial.flush();

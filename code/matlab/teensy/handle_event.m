@@ -5,16 +5,16 @@ function handle_event(raw_index)
 	NO_EVENT = -1;
 	
 	event_index = hex32dec(raw_index);
-
+	
+	toc
+	
 	% If no event occurred do nothing
 	if event_index == NO_EVENT,
 		return
 	end
 	
-	toc
-	
 	% Rotate the buffers so the event is in the desired location from 
-	buffer = rotate_buffers(buffer, event_index, 0.5);
+	buffer = rotate_buffer(buffer, event_index, 0.5);
 	
 	if mop_enabled,
 		master_of_puppets(buffer, fs);

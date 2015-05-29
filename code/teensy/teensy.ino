@@ -21,6 +21,7 @@
 #define CODE_INFO "IN"
 #define CODE_DEBUG "DB"
 #define SEPERATOR " "
+#define EMPTY_BUFFER_VALUE 127
 
 #define LED_ON() digitalWrite(LEDPIN,1)
 #define LED_OFF() digitalWrite(LEDPIN,0)
@@ -36,6 +37,15 @@
 	{\
 		LED_OFF();\
 		parseSerial();\
+	}
+
+#define RESET_BUFFERS()\
+	for (int i=0; i < BUFFERSIZE; ++i)\
+	{\
+		buffer1[i] = EMPTY_BUFFER_VALUE;\
+		buffer2[i] = EMPTY_BUFFER_VALUE;\
+		buffer3[i] = EMPTY_BUFFER_VALUE;\
+		buffer4[i] = EMPTY_BUFFER_VALUE;\
 	}
 
 // Microphone buffer size
@@ -72,10 +82,10 @@ const int channel4 = ADC::channel2sc1aADC0[PIN4];
 // Threshold for noise detection - on surpassing send data after sampling more
 byte threshold = 180;
 
-byte buffer1[BUFFERSIZE] = {0};
-byte buffer2[BUFFERSIZE] = {0};
-byte buffer3[BUFFERSIZE] = {0};
-byte buffer4[BUFFERSIZE] = {0};
+byte buffer1[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
+byte buffer2[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
+byte buffer3[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
+byte buffer4[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
 
 byte value1 = 0;
 byte value2 = 0;
@@ -213,6 +223,7 @@ void waiting()
 
 void running()
 {
+	RESET_BUFFERS();
 	// Inner loop allows faster operation (no function switch overhead)
 	while(state == RUNNING || state == ONCE)
 	{
@@ -254,7 +265,8 @@ void running()
 			}
 			
 			printInfo();
-			printSamples(); 
+			printSamples();
+			RESET_BUFFERS();
 		}
 	
 		//DID WE RECEIVE COMMANDS?

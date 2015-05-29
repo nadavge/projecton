@@ -243,6 +243,9 @@ void running()
 			{
 				k = 0;
 			}
+			
+			// Sleep to change freq to 29.8 KHz
+			delayMicroseconds(21);
 		}
 		
 		stopTime = micros();
@@ -263,6 +266,7 @@ void running()
 		//DID WE RECEIVE COMMANDS?
 		// TODO Signal the user if an event was spotted early on the loop
 		if (Serial.available()) parseSerial();
+		
 	}
 }
 

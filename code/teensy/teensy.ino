@@ -22,6 +22,12 @@
 #define CODE_DEBUG "DB"
 #define SEPERATOR " "
 #define EMPTY_BUFFER_VALUE 127
+/*
+ * The frequency is calculated by dividing the number of samples by the time it took
+ * to sample them. Since the time is in micros, the frequency is in MHz. Therefore,
+ * to get it to Hz we need to multiply by 10^6. Totally, we send here up to the 10 Hz
+ * rounding, since we only get the 5 first digits above the dot.
+ */
 #define FREQ_FACTOR 100000
 
 #define LED_ON() digitalWrite(LEDPIN,1)

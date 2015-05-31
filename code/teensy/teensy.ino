@@ -316,7 +316,7 @@ void running()
 			resetThresh3 = resetThresh3 > 0 ? resetThresh3-1 : 0;
 			resetThresh4 = resetThresh4 > 0 ? resetThresh4-1 : 0;
 
-			// Sleep to change freq to 29.8 KHz
+			// Sleep to change freq to 29.8 KHz, on 24 MHz non-optimized
 			delayMicroseconds(21);
 		}
 		

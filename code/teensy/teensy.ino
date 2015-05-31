@@ -59,8 +59,11 @@
 #define BUFFERSIZE 9000
 // How many samples to read before checking for commands
 #define SAMPLES BUFFERSIZE
+// The location of the event's location in the buffer, in the range [0,1]
+#define EVENT_LOCATION 0.5f
 // The amount of samples to take after the event was spotted
-#define SAMPLES_EVENT (BUFFERSIZE/2)
+const int SAMPLES_EVENT = BUFFERSIZE * (1 - EVENT_LOCATION);
+
 #define NO_EVENT -1
 
 enum State
@@ -282,6 +285,7 @@ void running()
 		//DID WE RECEIVE COMMANDS?
 		// TODO Signal the user if an event was spotted early on the loop
 		if (Serial.available()) parseSerial();
+		
 	}
 }
 

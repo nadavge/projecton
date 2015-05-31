@@ -18,7 +18,7 @@ function bind(com_port)
     s.Terminator = 13; % New line character
     s.BytesAvailableFcn = @serial_callback;
     % 20000 > (2 Hex digits) 2.5 * BUFF_SIZE (9000) 
-    s.InputBufferSize = 20000;
+    s.InputBufferSize = 40000;
     fopen(s);
     % Send a bind command
     fprintf(s, 'b');

@@ -56,7 +56,7 @@
 	}
 
 // Microphone buffer size
-#define BUFFERSIZE 9000
+#define BUFFERSIZE 15000
 // How many samples to read before checking for commands
 #define SAMPLES BUFFERSIZE
 // The location of the event's location in the buffer, in the range [0,1]

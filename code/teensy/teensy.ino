@@ -3,12 +3,7 @@
 
 //======================== DEFINITIONS =============================
 
-// PINS
 #define LEDPIN 13
-#define PIN1 2
-#define PIN2 3
-#define PIN3 10
-#define PIN4 11
 
 /*
  * Used for communication. Each data sent starts with 3 bytes stating
@@ -76,6 +71,11 @@ enum State
 
 //======================== GLOBALS =================================
 
+#define LO_SARUF 1 // [2,3,10,11] -> [1,2,3,4]
+#define SARUF 2 // [2,3,12,11] -> [1,2,3,4]
+
+#define TEENSY SARUF
+
 /* Pins USABLE on ADC0
  * 0, 1, ..., 13
  * Pins USABLE on ADC1
@@ -84,6 +84,16 @@ enum State
  * Channel 11 must be on ADC0, since on ADC1 it is disabled (See ADC_Module == 31)
  * This requires consideration when using the fast read, since the ADC0 should go first
  */
+
+#define PIN1 2
+#define PIN2 3
+#if TEENSY==LO_SARUF
+	#define PIN3 10
+#elif TEENSY==SARUF
+	#define PIN3 12
+#endif
+#define PIN4 11
+
 const int channel1 = ADC::channel2sc1aADC1[PIN1];
 const int channel2 = ADC::channel2sc1aADC0[PIN2];
 const int channel3 = ADC::channel2sc1aADC1[PIN3];

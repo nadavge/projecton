@@ -41,6 +41,9 @@ Disables MOP execution on gunfire detection by the teensy.
 ####set_arc(length)
 Set the arc_length used by MOP *in meters*.
 
+####set_threshold(theshold)
+Set the threshold for detection on the teensy (0-127.5).
+
 ###General Purpose
 
 ####plotem

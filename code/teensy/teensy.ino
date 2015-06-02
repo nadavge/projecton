@@ -1,5 +1,6 @@
 #include <ADC.h>
 #include "Teensy31FastADC.h"
+#include "config.h"
 
 //======================== DEFINITIONS =============================
 
@@ -17,24 +18,17 @@
 #define CODE_DEBUG "DB"
 #define SEPERATOR " "
 #define EMPTY_BUFFER_VALUE 127
-/*
- * The frequency is calculated by dividing the number of samples by the time it took
- * to sample them. Since the time is in micros, the frequency is in MHz. Therefore,
- * to get it to Hz we need to multiply by 10^6. Totally, we send here up to the 10 Hz
- * rounding, since we only get the 5 first digits above the dot.
- */
-#define FREQ_FACTOR 100000
 
 #define LED_ON() digitalWrite(LEDPIN,1)
 #define LED_OFF() digitalWrite(LEDPIN,0)
 
-#define WAIT_ACK() \
+#define WAIT_ACK()\
 	LED_ON();\
 	while (! Serial.available());\
 	Serial.read();\
 	LED_OFF()
 	
-#define CHECK_CMD() \
+#define CHECK_CMD()\
 	if (Serial.available())\
 	{\
 		LED_OFF();\
@@ -49,13 +43,13 @@
 		buffer3[i] = EMPTY_BUFFER_VALUE;\
 		buffer4[i] = EMPTY_BUFFER_VALUE;\
 	}
+	
+#define RESET_THRESH()\
+	resetThresh1 = 0;\
+	resetThresh2 = 0;\
+	resetThresh3 = 0;\
+	resetThresh4 = 0
 
-// Microphone buffer size
-#define BUFFERSIZE 12000
-// How many samples to read before checking for commands
-#define SAMPLES BUFFERSIZE
-// The location of the event's location in the buffer, in the range [0,1]
-#define EVENT_LOCATION 0.5f
 // The amount of samples to take after the event was spotted
 const int SAMPLES_EVENT = BUFFERSIZE * (1 - EVENT_LOCATION);
 
@@ -71,36 +65,13 @@ enum State
 
 //======================== GLOBALS =================================
 
-#define LO_SARUF 1 // [2,3,10,11] -> [1,2,3,4]
-#define SARUF 2 // [2,3,12,11] -> [1,2,3,4]
-
-#define TEENSY SARUF
-
-/* Pins USABLE on ADC0
- * 0, 1, ..., 13
- * Pins USABLE on ADC1
- * 2, 3, 10, 12, 13
- *
- * Channel 11 must be on ADC0, since on ADC1 it is disabled (See ADC_Module == 31)
- * This requires consideration when using the fast read, since the ADC0 should go first
- */
-
-#define PIN1 2
-#define PIN2 3
-#if TEENSY==LO_SARUF
-	#define PIN3 10
-#elif TEENSY==SARUF
-	#define PIN3 12
-#endif
-#define PIN4 11
-
 const int channel1 = ADC::channel2sc1aADC1[PIN1];
 const int channel2 = ADC::channel2sc1aADC0[PIN2];
 const int channel3 = ADC::channel2sc1aADC1[PIN3];
 const int channel4 = ADC::channel2sc1aADC0[PIN4];
 
 // Threshold for noise detection - on surpassing send data after sampling more
-byte threshold = 180;
+byte threshold = DEFAULT_THRESHOLD;
 
 byte buffer1[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
 byte buffer2[BUFFERSIZE] = {EMPTY_BUFFER_VALUE};
@@ -129,10 +100,6 @@ int k = 0;
 // Whether or not the threshold was reached
 int thresholdCount = 0;
 
-//TODO determine real value with yoel
-#define THRESHOLD_LIFE 1000
-#define THRESHOLD_MICS 2
-
 /*
  * Holds a number, decreasing each iteration. While > 0 means the threshold
  *  is still alive. If the threshold wasn't detected yet/too long ago, 0
@@ -141,12 +108,6 @@ int resetThresh1 = 0;
 int resetThresh2 = 0;
 int resetThresh3 = 0;
 int resetThresh4 = 0;
-
-#define RESET_THRESH() \
-	resetThresh1 = 0;\
-	resetThresh2 = 0;\
-	resetThresh3 = 0;\
-	resetThresh4 = 0
 
 // The state of the code execution
 State state = UNBOUND;

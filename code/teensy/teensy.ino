@@ -394,6 +394,9 @@ void parseSerial(char c)
 	case 'f':
 		fake_send();
 		break;
+	case 'c':
+		matlab_control();
+		break;
 	case '+': 
 		threshold += 5;
 		break;			 
@@ -510,4 +513,24 @@ void printInfo()
 	Serial.print(" threshold: ");
 	Serial.println(threshold,DEC);
 	Serial.flush();
+}
+
+void matlab_control()
+{
+	char what = 0;
+	
+	if (! Serial.available())
+	{
+		return;
+	}
+	
+	what = Serial.read();
+	
+	switch(what)
+	{
+	case 't':
+		threshold = Serial.parseInt();
+		break;
+		
+	}
 }

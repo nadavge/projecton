@@ -12,10 +12,10 @@ function [direction] = master_of_puppets(sounds, fs)
 	% Find the tdoa of each microphone relative to microphone no. 1
     for i = 2:4
         [isShot, tdoa(i)] = find_delay(sounds(i,:), sounds(1,:), fs);
-%         if (~isShot)
-%             direction = -1000;
-%             return
-%         end
+        if (~isShot)
+            %direction = -1000;
+            display('Not detected as shot');
+        end
     end
     
     % print the tdoa for debug:

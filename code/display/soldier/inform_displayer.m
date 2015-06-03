@@ -1,4 +1,4 @@
-function [  ] = SendDataToDisplayer( angle )
+function [  ] = inform_displayer( angle )
 
     global obj;
     global t;

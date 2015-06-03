@@ -1,4 +1,4 @@
-function unbindTCP( soldier_index )
+function unbind_soldier( soldier_index )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 	global soldier_sockets;

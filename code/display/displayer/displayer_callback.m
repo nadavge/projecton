@@ -1,4 +1,4 @@
-function ReadDataFromTCP( conn, ~, soldier_index)
+function displayer_callback( conn, ~, soldier_index)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 	

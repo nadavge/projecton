@@ -1,4 +1,4 @@
-function unbindTCP( soldier_index )
+function unbind_displayer( soldier_index )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 	global server_sockets;

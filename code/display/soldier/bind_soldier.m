@@ -1,4 +1,4 @@
-function bindTCPsoldier( soldier_index, ip, port )
+function bind_soldier( soldier_index, ip, port )
 
     global soldier_sockets;
 	

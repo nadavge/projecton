@@ -1,4 +1,4 @@
-function bindTCPdisplayer( soldier_index, ip, port )
+function bind_displayer( soldier_index, ip, port )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
     global server_sockets;

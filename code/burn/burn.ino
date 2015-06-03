@@ -2,6 +2,16 @@
 
 #define MIC_COUNT 4
 
+const char helpMsg[] = 
+"==================\n\n"
+"Pins USABLE on ADC0\n"
+" 0, 1, ..., 13\n\n"
+"Pins USABLE on ADC1\n"
+" 2, 3, 10, 12, 13\n\n"
+"ACD0: Mics #2, #4\n"
+"ADC1: Mics #1, #3\n\n"
+"==================\n\n";
+
 #define WAIT()\
 	while (! Serial.available())\
 	{\
@@ -20,6 +30,7 @@ void loop()
 	Serial.println("What would you like to do?");
 	Serial.println("o - overwrite");
 	Serial.println("r - read");
+	Serial.println("h - help");
 	
 	WAIT();
 	
@@ -63,6 +74,10 @@ void loop()
 			Serial.println(EEPROM.read(i), DEC);
 		}
 		
+		break;
+		
+	case 'h':
+		Serial.println(helpMsg);
 		break;
 	}
 	

@@ -1,4 +1,4 @@
-function bindTCPserver( ip, port )
+function bindTCPdisplayer( ip, port )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
     global ts;

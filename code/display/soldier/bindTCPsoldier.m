@@ -1,4 +1,4 @@
-function bindTCPclient( ip, port )
+function bindTCPsoldier( ip, port )
 
     global tc;
     

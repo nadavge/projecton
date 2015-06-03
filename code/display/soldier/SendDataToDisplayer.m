@@ -1,4 +1,4 @@
-function [  ] = SendDataToDisplayer( angle )
+function SendDataToDisplayer( angle )
 
     global obj;
     global t;
@@ -9,4 +9,3 @@ function [  ] = SendDataToDisplayer( angle )
     fprintf(t, ['%.7f;%.7f;%d\n' 13], [lat, lon, azimuth]);
 
 end
-

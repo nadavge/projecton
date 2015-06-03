@@ -1,8 +1,8 @@
 function plot_on_map(lat, lon, azimuth, soldier_index, is_shot)
 % NEED FOR MenzaSat.PNG file to be in the same folder.
-
+    global to_delete;
     colors = ['r', 'b', 'g', 'yellow', 'm', 'c', 'w', 'k'];
-    dAngle = pi/32;
+    dAngle = 4*pi/180;
     triangle_color = [is_shot 0 ~is_shot];
     
 %   Because axis is from the top left corner
@@ -23,14 +23,19 @@ function plot_on_map(lat, lon, azimuth, soldier_index, is_shot)
     x = lons(2);
     y = lats(3) - lats(2);
     
-    plot(x,y,'.', 'color', colors(soldier_index) , 'markerSize', 20);
+    hold on;
+    h1 = plot(x,y,'.', 'color', colors(soldier_index) , 'markerSize', 20);
     x = [x, x + 100*cos(angle+dAngle),  x + 100*cos(angle-dAngle)];
     y = [y, y + 100*sin(angle+dAngle),  y + 100*sin(angle-dAngle)];
     h2 = fill(x,y,triangle_color,'EdgeColor','None');
     alpha(h2,0.5)
-    pause(5)
-    delete(h2)
-    delete(h1)
-    
-end
 
+    to_delete{end+1} = h1;
+    to_delete{end+1} = h2;
+    
+    t = timer;
+    t.TimerFcn = @delete_shot;
+    t.StartDelay = 5;
+    
+    start(t);
+end

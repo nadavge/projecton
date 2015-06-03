@@ -1,7 +1,7 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-#define VERSION "0.2"
+#define VERSION "0.2.0"
 /*
  * The frequency is calculated by dividing the number of samples by the time it took
  * to sample them. Since the time is in micros, the frequency is in MHz. Therefore,

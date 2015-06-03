@@ -1,13 +1,15 @@
-function bindTCPsoldier( ip, port )
+function bindTCPsoldier( soldier_index, ip, port )
 
-    global tc;
+    global soldier_sockets;
+	
+	default_ports = [30001, 30002];
     
     if ~exist('port', 'var'),
-       port = 30001; 
+       port = default_ports( soldier_index ); 
     end
     
-    tc = tcpip(ip, port, 'NetworkRole', 'client');
-        
-    fopen(tc);
+    soldier_sockets{ soldier_index } =  tcpip(ip, port, 'NetworkRole', 'client');
+
+    fopen(soldier_sockets{ soldier_index });
 
 end

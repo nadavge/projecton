@@ -1,19 +1,21 @@
-function unbindTCP( )
+function unbindTCP( soldier_index )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
-
-    if ~exist('t', 'var'),
-        fclose(t); 
+	global server_sockets;
+	
+    if length(server_sockets) < soldier_index,
+        return
     end
+	
+	if isempty(server_sockets{ soldier_index }),
+		return
+	end
+	
+	% TODO maybe remove (quite redundant)
+	%if ~strcmp(server_sockets{ soldier_index }.status, 'open'),
+	%	return
+	%end
 
-    if ~exist('ts', 'var'),
-        fclose(ts); 
-    end
-
-    if ~exist('tc', 'var'),
-        fclose(tc); 
-    end
-
-
+	fclose(server_sockets{ soldier_index });
+	server_sockets{ soldier_index } = [];
 end
-

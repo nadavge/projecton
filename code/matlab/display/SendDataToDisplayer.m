@@ -6,7 +6,7 @@ function [  ] = SendDataToDisplayer( angle )
     lon = obj.Longitude;
     lat = obj.Latitude;
     
-    fprintf(t, '%.7f %.7f %d\n', lat, lon, azimuth);
+    fprintf(t, ['%.7f;%.7f;%d\n' 13], [lat, lon, azimuth]);
 
 end
 

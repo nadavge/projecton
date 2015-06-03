@@ -1,8 +1,19 @@
-function [ ] = unbindTCP( t )
+function unbindTCP( )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
-    fclose(t);
+    if ~exist('t', 'var'),
+        fclose(t); 
+    end
+
+    if ~exist('ts', 'var'),
+        fclose(ts); 
+    end
+
+    if ~exist('tc', 'var'),
+        fclose(tc); 
+    end
+
 
 end
 

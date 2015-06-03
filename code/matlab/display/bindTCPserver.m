@@ -8,6 +8,11 @@ function bindTCPserver( ip, port )
     end
 
     t = tcpip(ip, port, 'NetworkRole', 'server');
+    
+    t.InputBufferSize = 64;
+    t.Terminator = 13;
+    t.BytesAvailableFcn = @ReadDataFromTCP;
+
     fopen(t);
 
 end

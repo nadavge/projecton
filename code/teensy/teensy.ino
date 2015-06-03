@@ -1,4 +1,5 @@
 #include <ADC.h>
+#include <EEPROM.h>
 #include "Teensy31FastADC.h"
 #include "config.h"
 
@@ -65,6 +66,11 @@ enum State
 };
 
 //======================== GLOBALS =================================
+
+const int PIN1 = EEPROM.read(0);
+const int PIN2 = EEPROM.read(1);
+const int PIN3 = EEPROM.read(2);
+const int PIN4 = EEPROM.read(3);
 
 const int channel1 = ADC::channel2sc1aADC1[PIN1];
 const int channel2 = ADC::channel2sc1aADC0[PIN2];

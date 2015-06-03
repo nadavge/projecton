@@ -21,5 +21,5 @@ function bind(com_port)
     s.InputBufferSize = 40000;
     fopen(s);
     % Send a bind command
-    fprintf(s, 'b');
+    fprintf(s, '%s', 'b');
 end

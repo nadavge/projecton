@@ -370,6 +370,10 @@ void parseSerial(char c)
 	case '-':
 		threshold -= 5;
 		break;
+	default:
+		Serial.print(CODE_DEBUG SEPERATOR);
+		Serial.println("Got unknown command on parseSerial");
+		break;
 	}
 }
 

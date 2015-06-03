@@ -2,6 +2,6 @@ function once
     global s;
     
     if ~isempty(s),
-        fprintf(s, 'o');
+        fprintf(s, '%s', 'o');
     end
 end

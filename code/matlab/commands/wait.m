@@ -2,6 +2,6 @@ function wait
     global s;
     
     if ~isempty(s),
-        fprintf(s, 'w');
+        fprintf(s, '%s', 'w');
     end
 end

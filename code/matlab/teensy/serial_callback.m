@@ -43,9 +43,9 @@ function serial_callback(serial, event)
 		ack(serial);
 	% Print a debug serial write
 	elseif regexp(code, CODE_DEBUG),
-		display(data);
+		fprintf(1, [data '\n']);
 	elseif regexp(code, CODE_INFO),
-		display(data);
+		fprintf(1, [data '\n']);
     end
 end
 

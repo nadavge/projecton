@@ -8,8 +8,8 @@ function bind(com_port)
 		com_port = 3;
 	end
 	
-	mop_enabled = 0;
-	arc_length = 4; % Meters
+	mop_enabled = 1;
+	arc_length = 0.5; % Meters
     buffer = [];
     fs = 0; % Hz
 

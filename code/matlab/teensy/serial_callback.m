@@ -3,6 +3,7 @@ function serial_callback(serial, event)
 %   Reads the input, seperates it to code and data, then handle
 %	the input according to the code provided (Mic read, freq, etc.)
 	CODE_MIC_READ = 'B\d+';
+	CODE_VERSION_CTRL = 'VC';
 	CODE_EVENT_INDEX = 'EI';
 	CODE_FREQUENCY = 'FS';
 	CODE_DEBUG = 'DB';
@@ -30,6 +31,8 @@ function serial_callback(serial, event)
     if regexp(code,CODE_MIC_READ),
 		mic_read(str2num(code(2)), data);
         ack(serial);
+	elseif regexp(code, CODE_VERSION_CTRL),
+		check_version(data);
 	% An the event location
 	elseif regexp(code, CODE_EVENT_INDEX),
 		handle_event(data);

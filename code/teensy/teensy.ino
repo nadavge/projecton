@@ -13,6 +13,7 @@
 #define CODE_BUFFER "B"
 #define CODE_BUFFER_INFO "BI"
 #define CODE_EVENT_INDEX "EI"
+#define CODE_VERSION_CTRL "VC"
 #define CODE_FREQUENCY "FS"
 #define CODE_INFO "IN"
 #define CODE_DEBUG "DB"
@@ -116,10 +117,15 @@ State state = UNBOUND;
 
 inline void state_bind()
 {
-	if (state == UNBOUND)
+	if (state != UNBOUND)
 	{
-		state = WAITING;
+		return;
 	}
+	
+	state = WAITING;
+	
+	Serial.print(CODE_VERSION_CTRL SEPERATOR);
+	Serial.println(VERSION);
 }
 
 inline void state_unbind()
@@ -465,7 +471,8 @@ void printInfo()
 	// Get the frequency in KHz
 	float frequency = sampled*1000.0f / totalTime;
 	Serial.print(CODE_INFO SEPERATOR);
-	Serial.print("T: ");
+	Serial.print("Version: " VERSION);
+	Serial.print(" T: ");
 	Serial.print(totalTime);
 	Serial.print(" Sampled: ");
 	Serial.print(sampled,DEC);

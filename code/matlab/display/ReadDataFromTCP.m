@@ -1,10 +1,13 @@
-function ReadDataFromTCP( t )
+function ReadDataFromTCP(t, event)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
-    [lat, lon, azimuth] = fscanf(t, '%.7f %.7f %d\n',25);
-    plot_on_map(lat, lon, azimuth);
+    [A, len] = fscanf(t, '%f %f %d');
+	lat = A(1);
+	lon = A(2);
+	azimuth = A(3);
 
+    plot_on_map(lat, lon, azimuth);
 
 end
 

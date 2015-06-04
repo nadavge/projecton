@@ -19,5 +19,8 @@ function [direction] = master_of_puppets(sounds, fs)
     tdoa
 
     direction = Johnny(tdoa, arc_length);
-    SendDataToDisplayer( direction, is_shot )
+    
+    % TODO set real value from teensy?
+    soldier_index = 1;
+    inform_displayer( soldier_index, direction, is_shot );
 end

@@ -2,6 +2,13 @@ function inform_displayer( soldier_index, angle, is_shot )
 
 	global obj;
 	global soldier_sockets;
+	
+	if isempty(obj),
+		fprintf(2, ['Android device is not defined\n']);
+		return;
+	end
+	
+	% TODO make sure this is actually the azimuth
 	azimuth = obj.Orientation(1) - angle;
 	lon = obj.Longitude;
 	lat = obj.Latitude;

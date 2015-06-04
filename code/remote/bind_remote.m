@@ -16,6 +16,10 @@ function bind_puppet( ip, port )
 
 	remote_socket = tcpip(ip, port, 'NetworkRole', 'client');
 
+	remote_socket.InputBufferSize = 64;
+	remote_socket.Terminator = 13;
+	remote_socket.BytesAvailableFcn = @remote_callback;
+
 	fopen(remote_socket);
 
 end

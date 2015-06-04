@@ -19,7 +19,7 @@ function bind_displayer( soldier_index, ip, port )
 	
 	server_sockets{ soldier_index }.InputBufferSize = 64;
 	server_sockets{ soldier_index }.Terminator = 13;
-	server_sockets{ soldier_index }.BytesAvailableFcn = @(conn, event) ReadDataFromTCP(conn, event, soldier_index);
+	server_sockets{ soldier_index }.BytesAvailableFcn = @(conn, event) displayer_callback(conn, event, soldier_index);
 
 	fopen(server_sockets{ soldier_index });
 

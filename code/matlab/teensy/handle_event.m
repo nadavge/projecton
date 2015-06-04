@@ -1,6 +1,6 @@
 function handle_event(raw_index)
 %HANDLE_EVENT Handle the event of detection
-%   Reads the index in which the event occured in hex encoding
+%   Reads the index in which the event occurred in hex encoding
 	global buffer fs mop_enabled;
 	NO_EVENT = -1;
 	

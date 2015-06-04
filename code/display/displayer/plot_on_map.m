@@ -36,7 +36,7 @@ function plot_on_map(lat, lon, azimuth, soldier_index, is_shot)
 	
 	t = timer;
 	t.TimerFcn = @delete_shot;
-	t.StartDelay = 5;
+	t.StartDelay = 25;
 	
 	start(t);
 end

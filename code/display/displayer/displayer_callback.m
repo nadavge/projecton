@@ -3,7 +3,7 @@ function displayer_callback( conn, ~, soldier_index)
 %	handles all data coming in through the different sockets
 	
 	% TODO maybe change data send format to allow auto unbind
-	[A, len] = fscanf( conn, '%f %f %d %d');
+	[A, len] = fscanf( conn, '%f %f %d %d' );
 	lat = A(1);
 	lon = A(2);
 	azimuth = A(3);

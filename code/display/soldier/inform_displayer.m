@@ -1,11 +1,16 @@
-function inform_displayer( angle, is_shot )
+function inform_displayer( soldier_index, angle, is_shot )
 
 	global obj;
-	global t;
+	global soldier_sockets;
 	azimuth = obj.Orientation(1) - angle;
 	lon = obj.Longitude;
 	lat = obj.Latitude;
 	
-	fprintf(t, ['%.7f %.7f %d %d' 13], [lat, lon, azimuth, is_shot]);
+	if ~socket_initialized( soldier_sockets, soldier_index ),
+		fprintf(2, ['Soldier ' num2str(soldier_index) ' socket is not initialized\n']);
+		return;
+	end
+	
+	fprintf(soldier_sockets{ soldier_index }, ['%.7f %.7f %d %d' 13], [lat, lon, azimuth, is_shot]);
 
 end

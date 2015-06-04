@@ -19,4 +19,5 @@ function mic_read(id, data)
 	end
 	
 	buffer(id, :) = values - MIDDLE_VALUE;
+    %buffer(id, :) = buffer(id, :) - mean(buffer(id, :));
 end
